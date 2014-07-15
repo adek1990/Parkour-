@@ -1,1 +1,19 @@
-# TU KOD
+options:
+	tag: &7[&3Parkour&c+&7]
+ 
+command /parkour [<text="help">] [<text>]:
+	aliases: /p
+	trigger:
+		arg 1 is "set" or "setparkour":
+			player has permission "pk.set" or "pk.*":
+				arg 2 is set:
+					{pk.parkour.%arg 2%} is not set:
+						set {pk.parkour.%arg 2%} to true
+						send "{@tag} &aParkour &e%arg 2% &azostal stworzony."
+						send "&7* &aAby ustawic spawn parkoura wpisz &e/p setspawn <NAZWA>"
+					else:
+						send "{@tag} &cParkour &e%arg 2% &cjuz istnieje."
+				else:
+					send "{@tag} &cUzycie: &e/p set <NAZWA>"
+			else:
+				send "{@tag} &cBrak uprawnien."
