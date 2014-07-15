@@ -4,16 +4,26 @@ options:
 command /parkour [<text="help">] [<text>]:
 	aliases: /p
 	trigger:
-		arg 1 is "set" or "setparkour":
-			player has permission "pk.set" or "pk.*":
+		arg 1 is "set" or "setparkour" or "create":
+			player has permission "pk.create" or "pk.*":
 				arg 2 is set:
 					{pk.parkour.%arg 2%} is not set:
 						set {pk.parkour.%arg 2%} to true
 						send "{@tag} &aParkour &e%arg 2% &azostal stworzony."
 						send "&7* &aAby ustawic spawn parkoura wpisz &e/p setspawn <NAZWA>"
+						send "&7* &aAby ustawic koniec parkoura wpisz &e/p setend <NAZWA>"
+						send "&7* &aAby ustawic nagrode za parkour wpisz &e/p setprize <NAZWA>"
 					else:
 						send "{@tag} &cParkour &e%arg 2% &cjuz istnieje."
 				else:
 					send "{@tag} &cUzycie: &e/p set <NAZWA>"
 			else:
 				send "{@tag} &cBrak uprawnien."
+		arg 1 is "setspawn":
+			player has permission "pk.setspawn" or "pk.*":
+				arg 2 is set:
+					{pk.parkour.%arg 2%} is set:
+						set {pk.spawn.%arg 2%} to location of player
+						send "{@tag} &aUstawiono spawn dla mapy &e%arg 2%&a."
+						
+
