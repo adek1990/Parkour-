@@ -25,7 +25,12 @@ command /parkour [<text="help">] [<text>]:
 				arg 2 is set:
 					{pk.parkour.%arg 2%} is set:
 						set {pk.spawn.%arg 2%} to location of player
-						send "{@tag} &aUstawiono spawn dla mapy &e%arg 2%&a."
+						set {_x} to location of player
+						add 1 to y location of {_x}
+						block under {_x} is inactive stone plate or active stone plate:
+							set {_y} to block under {_x}
+							set {pk.start.%arg 2%.%{_y}%} to true
+							send "{@tag} &aUstawiono spawn dla mapy &e%arg 2%&a."
 					else:
 						send "{@tag} &cMapa &e%arg 2% &anie istnieje."
 				else:
@@ -91,3 +96,15 @@ command /parkour [<text="help">] [<text>]:
 					send "{@tag} &cUzycie: &e/p setend <NAZWA>"
 			else:
 				send "{@tag} &cBrak uprawnien."
+		arg 1 is "help":
+			player has permission "pk.help" or "pk.*":
+				send "&8====================== &3Parkour&c+ &8======================"
+				send "&7* &a/p create <NAZWA> &8- &eStworzenie parkoura"
+				send "&7* &a/p remove <NAZWA> &8- &eUsuwanie parkoura"
+				send "&7* &a/p setspawn <NAZWA> &8- &eUstawianie spawnu parkoura"
+				send "&7* &a/p setend <NAZWA> &8- &eUstawianie konca parkoura"
+				send "&7* &a/p setprize <NAZWA> &8- &eUstawia nagrode za parkour"
+				send "&7* &a/p list &8- &eLista parkourow"
+				send "&8====================================================="
+
+
