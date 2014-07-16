@@ -81,8 +81,13 @@ command /parkour [<text="help">] [<text>]:
 						add 1 to y location of {_x}
 						block under {_x} is inactive stone plate or active stone plate:
 							set {_y} to block under {_x}
-							set {pk.end.%arg 2%.%{_y}%}
-
-
-
-
+							set {pk.end.%arg 2%.%{_y}%} to true
+							send "{@tag} &aMeta dla parkoura &e%arg 2% &azostala ustawiona."
+						else:
+							send "{@tag} &cMusisz stac na plytce naciskowej (kamiennej)."
+					else:
+						send "{@tag} &cParkour &e%arg 2% &cnie istnieje."
+				else:
+					send "{@tag} &cUzycie: &e/p setend <NAZWA>"
+			else:
+				send "{@tag} &cBrak uprawnien."
