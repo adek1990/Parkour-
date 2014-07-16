@@ -37,6 +37,8 @@ command /parkour [<text="help">] [<text>]:
 				arg 2 is set:
 					{pk.parkour.%arg 2%} is set:
 						clear {pk.parkour.%arg 2%}
+						remove arg 2 from {pk.list::*}
+						clear {pk.spawn.%arg 2%}
 						send "{@tag} &aParkour &e%arg 2% &azostal usuniety."
 					else:
 						send "{@tag} &cParkour &e%arg 2% &cnie istnieje."
@@ -54,4 +56,21 @@ command /parkour [<text="help">] [<text>]:
 					replace all "," with "&b,&e" in {_x}
 					send "{@tag} &aLista map parkour &3(&b%size of {pk.list::*}%&3):"
 					send "&e%{_x}%"
+			else:
+				send "{@tag} &cBrak uprawnien."
+		arg 1 is "setprize":
+			player has permission "pk.setprize" or "pk.*":
+				arg 2 is set:
+					{pk.parkour.%arg 2%} is set:
+						player's tool is not air:
+							set {pk.prize.%arg 2%} to player's tool
+							send "{@tag} &aNagroda do parkouru &e%arg 2% &azostala ustawiona."
+						else:
+							send "{@tag} &cMusisz trzymac jakis przedmiot."
+					else:
+						send "{@tag} &cParkour &e%arg 2% &cnie istnieje."
+				else:
+					send "{@tag} &cUzycie: &e/p setprize <NAZWA>"
+			else:
+				send "{@tag} &cBrak uprawnien."
 
