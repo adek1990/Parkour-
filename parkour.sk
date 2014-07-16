@@ -2,13 +2,14 @@ options:
 	tag: &7[&3Parkour&c+&7]
  
 command /parkour [<text="help">] [<text>]:
-	aliases: /p
+	aliases: /p, /pk
 	trigger:
-		arg 1 is "set" or "setparkour" or "create":
+		arg 1 is "set" or "setparkour" or "create" or "add":
 			player has permission "pk.create" or "pk.*":
 				arg 2 is set:
 					{pk.parkour.%arg 2%} is not set:
 						set {pk.parkour.%arg 2%} to true
+						add arg 2 to {pk.list::*}
 						send "{@tag} &aParkour &e%arg 2% &azostal stworzony."
 						send "&7* &aAby ustawic spawn parkoura wpisz &e/p setspawn <NAZWA>"
 						send "&7* &aAby ustawic koniec parkoura wpisz &e/p setend <NAZWA>"
@@ -16,7 +17,7 @@ command /parkour [<text="help">] [<text>]:
 					else:
 						send "{@tag} &cParkour &e%arg 2% &cjuz istnieje."
 				else:
-					send "{@tag} &cUzycie: &e/p set <NAZWA>"
+					send "{@tag} &cUzycie: &e/p add <NAZWA>"
 			else:
 				send "{@tag} &cBrak uprawnien."
 		arg 1 is "setspawn":
@@ -25,5 +26,32 @@ command /parkour [<text="help">] [<text>]:
 					{pk.parkour.%arg 2%} is set:
 						set {pk.spawn.%arg 2%} to location of player
 						send "{@tag} &aUstawiono spawn dla mapy &e%arg 2%&a."
-						
+					else:
+						send "{@tag} &cMapa &e%arg 2% &anie istnieje."
+				else:
+					send "{@tag} &cUzycie: &e/p setspawn <NAZWA>"
+			else:
+				send "{@tag} &cBrak uprawnien."
+		arg 1 is "remove" or "unset" or "removeparkour":
+			player has permission "pk.remove" or "pk.*":
+				arg 2 is set:
+					{pk.parkour.%arg 2%} is set:
+						clear {pk.parkour.%arg 2%}
+						send "{@tag} &aParkour &e%arg 2% &azostal usuniety."
+					else:
+						send "{@tag} &cParkour &e%arg 2% &cnie istnieje."
+				else:
+					send "{@tag} &cUzycie: &e/p remove <NAZWA>"
+			else:
+				send "{@tag} &cBrak uprawnien."
+		arg 1 is "list":
+			player has permission "pk.list" or "pk.*":
+				{pk.list::*} is not set:
+					send "{@tag} &cBrak parkourow. &3(&b0&3)"
+				else:
+					set {_x} to "%{pk.list::*}%"
+					replace all " and " with ", " in {_x}
+					replace all "," with "&b,&e" in {_x}
+					send "{@tag} &aLista map parkour &3(&b%size of {pk.list::*}%&3):"
+					send "&e%{_x}%"
 
