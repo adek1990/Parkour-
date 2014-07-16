@@ -73,4 +73,16 @@ command /parkour [<text="help">] [<text>]:
 					send "{@tag} &cUzycie: &e/p setprize <NAZWA>"
 			else:
 				send "{@tag} &cBrak uprawnien."
+		arg 1 is "setend":
+			player has permission "pk.setend" or "pk.*":
+				arg 2 is set:
+					{pk.parkour.%arg 2%} is set:
+						set {_x} to location of player
+						add 1 to y location of {_x}
+						block under {_x} is inactive stone plate or active stone plate:
+							set {_y} to block under {_x}
+							set {pk.end.%arg 2%.%{_y}%}
+
+
+
 
