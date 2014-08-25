@@ -1,15 +1,21 @@
+#/////////////////////////////////////
+#Tworzenie, usuwanie parkura
+#komendy do zmiany: /pk setpize
+#komendy do testowania /pk debuge
+#system timer działa
+#/////////////////////////////////////
+
 options:
 	tag: &7[&3Parkour&c+&7]
- 
 command /parkour [<text="help">] [<text>]:
 	aliases: /p, /pk
 	trigger:
-		arg 1 is "set" or "setparkour" or "create" or "add":
-			player has permission "pk.create" or "pk.*":
-				arg 2 is set:
-					{pk.parkour.%arg 2%} is not set:
-						set {pk.parkour.%arg 2%} to true
-						add arg 2 to {pk.list::*}
+		if arg 1 is "set" or "setparkour" or "create" or "add":
+			if player has permission "pk.create" or "pk.*":
+				if arg 2 is set:
+					if {parkour::nazwa::%arg 2%} is not set:
+						set {parkour::nazwa::%arg 2%} to true
+						add arg 2 to {parkour::lista::list::*}
 						send "{@tag} &aParkour &e%arg 2% &azostal stworzony."
 						send "&7* &aAby ustawic spawn parkoura wpisz &e/p setspawn <NAZWA>"
 						send "&7* &aAby ustawic koniec parkoura wpisz &e/p setend <NAZWA>"
@@ -20,16 +26,15 @@ command /parkour [<text="help">] [<text>]:
 					send "{@tag} &cUzycie: &e/p add <NAZWA>"
 			else:
 				send "{@tag} &cBrak uprawnien."
-		arg 1 is "setspawn":
-			player has permission "pk.setspawn" or "pk.*":
-				arg 2 is set:
-					{pk.parkour.%arg 2%} is set:
-						set {pk.spawn.%arg 2%} to location of player
+		if arg 1 is "setspawn":
+			if player has permission "pk.setspawn" or "pk.*":
+				if arg 2 is set:
+					if {parkour::nazwa::%arg 2%} is set:
+						set {parkour::loc::%arg 2%} to location of player
 						set {_x} to location of player
-						add 1 to y location of {_x}
-						block under {_x} is inactive stone plate or active stone plate:
-							set {_y} to block under {_x}
-							set {pk.start.%arg 2%.%{_y}%} to true
+						if block under {_x} is inactive stone plate or active stone plate:
+							set {_nazwa} to arg 2
+							set {parkour::nazwa::%{_nazwa}%::locStart::nazwaAreny} to location of player
 							send "{@tag} &aUstawiono spawn dla mapy &e%arg 2%&a."
 					else:
 						send "{@tag} &cMapa &e%arg 2% &anie istnieje."
@@ -37,13 +42,13 @@ command /parkour [<text="help">] [<text>]:
 					send "{@tag} &cUzycie: &e/p setspawn <NAZWA>"
 			else:
 				send "{@tag} &cBrak uprawnien."
-		arg 1 is "remove" or "unset" or "removeparkour":
-			player has permission "pk.remove" or "pk.*":
-				arg 2 is set:
-					{pk.parkour.%arg 2%} is set:
-						clear {pk.parkour.%arg 2%}
-						remove arg 2 from {pk.list::*}
-						clear {pk.spawn.%arg 2%}
+		if arg 1 is "remove" or "unset" or "removeparkour":
+			if player has permission "pk.remove" or "pk.*":
+				if arg 2 is set:
+					if {parkour::nazwa::%arg 2%} is set:
+						clear {parkour::nazwa::%arg 2%}
+						remove arg 2 from {parkour::lista::list::*}
+						clear {parkour::loc::%arg 2%::start}
 						send "{@tag} &aParkour &e%arg 2% &azostal usuniety."
 					else:
 						send "{@tag} &cParkour &e%arg 2% &cnie istnieje."
@@ -52,23 +57,23 @@ command /parkour [<text="help">] [<text>]:
 			else:
 				send "{@tag} &cBrak uprawnien."
 		arg 1 is "list":
-			player has permission "pk.list" or "pk.*":
-				{pk.list::*} is not set:
-					send "{@tag} &cBrak parkourow. &3(&b0&3)"
-				else:
-					set {_x} to "%{pk.list::*}%"
+			if player has permission "pk.list" or "pk.*":
+				if {parkour::lista::list::*} is not set:
+					set {_x} to "%{parkour::lista::list::*}%"
 					replace all " and " with ", " in {_x}
 					replace all "," with "&b,&e" in {_x}
-					send "{@tag} &aLista map parkour &3(&b%size of {pk.list::*}%&3):"
+					send "{@tag} &aLista map parkour &3(&b%size of {parkour::lista::list::*}%&3):"
 					send "&e%{_x}%"
+				else:
+					send "{@tag} &cBrak parkourow. &3(&b0&3)"
 			else:
 				send "{@tag} &cBrak uprawnien."
-		arg 1 is "setprize":
-			player has permission "pk.setprize" or "pk.*":
-				arg 2 is set:
-					{pk.parkour.%arg 2%} is set:
-						player's tool is not air:
-							set {pk.prize.%arg 2%} to player's tool
+		if arg 1 is "setprize":
+			if player has permission "pk.setprize" or "pk.*":
+				if arg 2 is set:
+					if {parkour::nazwa::%arg 2%} is set:
+						if player's tool is not air:
+							set {parkour::nazwa::%arg 2%::prize} to player's tool
 							send "{@tag} &aNagroda do parkouru &e%arg 2% &azostala ustawiona."
 						else:
 							send "{@tag} &cMusisz trzymac jakis przedmiot."
@@ -78,26 +83,26 @@ command /parkour [<text="help">] [<text>]:
 					send "{@tag} &cUzycie: &e/p setprize <NAZWA>"
 			else:
 				send "{@tag} &cBrak uprawnien."
-		arg 1 is "setend":
-			player has permission "pk.setend" or "pk.*":
-				arg 2 is set:
-					{pk.parkour.%arg 2%} is set:
+		if arg 1 is "setend":
+			if player has permission "pk.setend" or "pk.*":
+				if arg 2 is set:
+					if {parkour::nazwa::%arg 2%} is set:
 						set {_x} to location of player
 						add 1 to y location of {_x}
-						block under {_x} is inactive stone plate or active stone plate:
+						if block under {_x} is inactive wood plate or active wood plate:
 							set {_y} to block under {_x}
-							set {pk.end.%arg 2%.%{_y}%} to true
+							set {parkour::nazwa::%arg 2%::end::%{_y}%} to true
 							send "{@tag} &aMeta dla parkoura &e%arg 2% &azostala ustawiona."
 						else:
-							send "{@tag} &cMusisz stac na plytce naciskowej (kamiennej)."
+							send "{@tag} &cMusisz stac na plytce naciskowej (drawnianej)."
 					else:
 						send "{@tag} &cParkour &e%arg 2% &cnie istnieje."
 				else:
 					send "{@tag} &cUzycie: &e/p setend <NAZWA>"
 			else:
 				send "{@tag} &cBrak uprawnien."
-		arg 1 is "help":
-			player has permission "pk.help" or "pk.*":
+		if arg 1 is "help":
+			if player has permission "pk.help" or "pk.*":
 				send "&8====================== &3Parkour&c+ &8======================"
 				send "&7* &a/p create <NAZWA> &8- &eStworzenie parkoura"
 				send "&7* &a/p remove <NAZWA> &8- &eUsuwanie parkoura"
@@ -106,5 +111,36 @@ command /parkour [<text="help">] [<text>]:
 				send "&7* &a/p setprize <NAZWA> &8- &eUstawia nagrode za parkour"
 				send "&7* &a/p list &8- &eLista parkourow"
 				send "&8====================================================="
-
-
+			else:
+				send "{@tag} &cBrak uprawnien."
+		if arg 1 is "debuge":
+			set {parkour::gracz::%player%::start} to false
+			send "a"
+on walking on inactive stone plate or active stone plate:
+	if {parkour::gracz::%player%::start} is false:
+		set {parkour::gracz::%player%::start} to true
+		set the level of the player to 0
+		set {_index} to 0
+		set {_x} to true
+		while {_x} is true:
+			wait 1 second
+			add 1 to {_index}
+			add 1 to {parkour::gracz::%player%::czas}
+			set the level of the player to {_index}
+			if {parkour::gracz::%player%::start} is false:
+				set {_x} to false
+on walking on inactive wood plate or active wood plate:
+	if {parkour::gracz::%player%::start} is true:
+		set {parkour::gracz::%player%::start} to false
+		send "&aPrzeszedłeś parkura w czasnie: &6%{parkour::gracz::%player%::czas}% &asekund"
+		set the level of the player to 0
+		add {parkour::nazwa::%{_nazwa}%::prize} to the player
+		set {parkour::gracz::%player%::czas} to 0
+on walking on water:
+	if {parkour::gracz::%player%::start} is true:
+		send "Przegrałeś zostaniesz teleportowany an start"
+		set {_nazwa} to {parkour::nazwa::%{_nazwa}%::locStart::nazwaAreny}
+		teleport player to {parkour::nazwa::%{_nazwa}%::locStart::nazwaAreny}
+		set {parkour::gracz::%player%::start} to false
+		set the level of the player to 0
+		set {parkour::gracz::%player%::czas} to 0
